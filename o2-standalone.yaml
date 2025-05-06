@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: o2-standalone
+  labels:
+    mount-eos: "true"
+    mount-cvmfs: "true"
+spec:
+  containers:
+  - name: o2-standalone
+    image: oliverrietmann/o2-standalone:latest
+    command: ["sleep", "infinity"]
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+    securityContext:
+      runAsUser: 0 
+      runAsGroup: 0
+    volumeMounts:
+    - name: o2-alice-volume
+      mountPath: /root/alice
+    - name: o2-standalone-volume
+      mountPath: /root/standalone
+  volumes:
+  - name: o2-alice-volume
+    persistentVolumeClaim:
+      claimName: o2-alice-pvc
+  - name: o2-standalone-volume
+    persistentVolumeClaim:
+      claimName: o2-standalone-pvc
+  nodeSelector:
+    nvidia.com/gpu.product: NVIDIA-H100-NVL
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: o2-alice-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: o2-standalone-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
