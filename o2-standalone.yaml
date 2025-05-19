@@ -2,26 +2,35 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: o2-standalone
-  labels:
-    mount-eos: "true"
-    mount-cvmfs: "true"
+  #labels:
+  #  mount-eos: "true"
+  #  mount-cvmfs: "true"
 spec:
   containers:
   - name: o2-standalone
     image: oliverrietmann/o2-standalone:latest
     command: ["sleep", "infinity"]
     resources:
+      requests:
+        memory: "32Gi"
       limits:
         nvidia.com/gpu: 1
+        memory: "64Gi"
     securityContext:
       runAsUser: 0 
       runAsGroup: 0
     volumeMounts:
+    - name: dev-shm
+      mountPath: /dev/shm
     - name: o2-alice-volume
       mountPath: /root/alice
     - name: o2-standalone-volume
       mountPath: /root/standalone
   volumes:
+  - name: dev-shm
+    emptyDir:
+      medium: Memory
+      sizeLimit: 4Gi
   - name: o2-alice-volume
     persistentVolumeClaim:
       claimName: o2-alice-pvc
@@ -54,3 +63,9 @@ spec:
   resources:
     requests:
       storage: 10Gi
+
+
+
+# dnf install hip-rocclr ocl-icd ocl-icd-devel hipcub rocthrust rocm-dev hipify-clang hiprand-devel hipblas-devel hipsparse-devel rocblas-devel rocrand-devel miopen-hip-devel hipfft-devel rccl-devel migraphx-devel rdma-core-devel hipblaslt-devel rocprim-devel
+# dnf install time bc
+
