@@ -1,0 +1,10 @@
+# This is Git's per-user configuration file.
+[user]
+	name = Oliver Rietmann
+	email = oliver.rietmann@cern.ch
+	signingkey = /root/.ssh/id_ecdsa
+[gpg]
+	format = ssh
+[credential]
+    helper = cache
+
