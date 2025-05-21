@@ -8,7 +8,7 @@ spec:
   containers:
   - name: o2-full-ci
     image: oliverrietmann/o2-standalone:latest
-    command: ["sh", "-c", "cp /mnt/secret/ssh-privatekey /root/.ssh/id_ecdsa && sleep infinity"]
+    command: ["sh", "-c", "cp /root/secret/ssh-privatekey /root/.ssh/id_ecdsa && sleep infinity"]
     resources:
       requests:
         memory: "32Gi"
@@ -16,13 +16,13 @@ spec:
         nvidia.com/gpu: 1
         memory: "64Gi"
     securityContext:
-      runAsUser: 0 
+      runAsUser: 0
       runAsGroup: 0
     volumeMounts:
     - name: dev-shm
       mountPath: /dev/shm
     - name: ssh-volume
-      mountPath: /mnt/secret
+      mountPath: /root/secret
     - name: gitconfig
       mountPath: /root/.gitconfig
       subPath: .gitconfig
@@ -82,3 +82,4 @@ spec:
 # dnf install hip-rocclr ocl-icd ocl-icd-devel hipcub rocthrust rocm-dev hipify-clang hiprand-devel hipblas-devel hipsparse-devel rocblas-devel rocrand-devel miopen-hip-devel hipfft-devel rccl-devel migraphx-devel rdma-core-devel hipblaslt-devel rocprim-devel
 # dnf install time bc
 # kubectl create secret generic orietman-alice-key --from-file=userkey.pem=/home/orietman/.globus/userkey.pem --from-file=usercert.pem=/home/orietman/.globus/usercert.pem
+

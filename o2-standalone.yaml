@@ -6,16 +6,16 @@ spec:
   containers:
   - name: o2-standalone
     image: oliverrietmann/o2-standalone:latest
-    command: ["sh", "-c", "cp /mnt/secret/ssh-privatekey /root/.ssh/id_ecdsa && sleep infinity"]
+    command: ["sh", "-c", "cp /root/secret/ssh-privatekey /root/.ssh/id_ecdsa && sleep infinity"]
     resources:
       limits:
         nvidia.com/gpu: 1
     securityContext:
-      runAsUser: 0 
+      runAsUser: 0
       runAsGroup: 0
     volumeMounts:
     - name: ssh-volume
-      mountPath: /mnt/secret
+      mountPath: /root/secret
     - name: gitconfig
       mountPath: /root/.gitconfig
       subPath: .gitconfig
