@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: soa-benchmark
+  #labels:
+  #  mount-eos: "true"
+spec:
+  containers:
+  - name: soa-benchmark
+    image: registry.cern.ch/ngt-wp1.7/wp1.7-soa-benchmark
+    command: ["sh", "-c", "cp /root/secret/ssh-privatekey /root/.ssh/id_ecdsa && sleep infinity"]
+    securityContext:
+      runAsUser: 0
+      runAsGroup: 0
+    volumeMounts:
+    - name: ssh-volume
+      mountPath: /root/secret
+    - name: gitconfig
+      mountPath: /root/.gitconfig
+      subPath: .gitconfig
+    - name: soa-benchmark-volume
+      mountPath: /root/wp1.7-soa-benchmark
+  volumes:
+  - name: ssh-volume
+    secret:
+      secretName: ssh-secret
+      defaultMode: 0600
+  - name: gitconfig
+    configMap:
+      name: gitconfig
+  - name: soa-benchmark-volume
+    persistentVolumeClaim:
+      claimName: soa-benchmark-pvc
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: soa-benchmark-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: shared
+
